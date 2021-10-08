@@ -15,6 +15,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
         private JwtTokenProvider jwtTokenProvider;
+        
 
         // Jwt Provier 주입
         public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
