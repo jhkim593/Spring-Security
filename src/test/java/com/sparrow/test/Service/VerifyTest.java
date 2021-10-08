@@ -124,18 +124,18 @@ class VerifyTest {
         verifyNoInteractions(userService2);
     }
 
-    @Test
-    public void test(){
-        //given
-        given(userService.getUser()).willReturn(new User(1L,"@2"));
-
-        //when
-        userService.getUser();
-        userService.getUser();
-
-        //then
-        then(userService).should(times(2)).getUser();
-
-
-    }
+//    @Test
+//    public void test(){
+//        //given
+//        given(userService.getUser()).willReturn(new User(1L,"@2","dd","s"));
+//
+//        //when
+//        userService.getUser();
+//        userService.getUser();
+//
+//        //then
+//        then(userService).should(times(2)).getUser();
+//
+//
+//    }
 }

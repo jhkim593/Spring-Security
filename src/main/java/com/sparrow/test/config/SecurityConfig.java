@@ -1,38 +1,27 @@
 package com.sparrow.test.config;
 
-import com.sparrow.test.UserRepository;
-import com.sparrow.test.config.auth.AuthenticFilter;
-import com.sparrow.test.config.auth.CustomBasicAuthenticationFilter;
 import com.sparrow.test.config.auth.CustomUserDetailsService;
+import com.sparrow.test.config.auth.SecurityAuthenticationFilter;
+import com.sparrow.test.config.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
-    UsernamePasswordAuthenticationFilter authenticationFilter =null;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
 //    @Bean
@@ -47,39 +36,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        authenticationFilter=authenticationFilter();
 
-            http
-                    .logout()
-                    .logoutUrl("/api/logout").and()
-                    .csrf()
-                    .disable()
 
-                    .addFilter(new AuthenticFilter(authenticationManager(),userRepository,customUserDetailsService))
-//                    .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                    .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-//                    .addFilter(new CustomBasicAuthenticationFilter(authenticationManager(),null))
+        http.
 
-                    .authorizeRequests()
-                    .antMatchers(
-                            "/signUp","/test","/login"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-//                    .headers().frameOptions().sameOrigin()
-//                    .and()
+//                httpBasic().disable()
+                csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
+                .antMatchers("/test"
+                ).permitAll()
+                .antMatchers("/user/test").hasRole("USER")
+                .antMatchers("/admin/test").hasRole("ADMIN")
+                .anyRequest().authenticated()// 그외 나머지 요청은 모두 인증된 회원만 접근 가능
+                .and()
+//                .addFilterBefore(new  SecurityAuthenticationFilter(customUserDetailsService,passwordEncoder), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-                    .httpBasic().disable();
-//                    .authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint()) ;
-//            http.authenticationProvider(authProvider);
-        }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }
+
+
+
 

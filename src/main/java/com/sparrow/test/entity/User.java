@@ -31,4 +31,8 @@ public class User {
         user.name=name;
         return user;
     }
+    public User(Long id,String password){
+        this.id=id;
+        this.password=password;
+    }
 }

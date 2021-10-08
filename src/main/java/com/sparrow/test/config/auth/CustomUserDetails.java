@@ -8,13 +8,16 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
     private Long id;
-    private String email;
+    private String emil;
     private String password;
     private GrantedAuthority authorities;
 
+
+
+
     public CustomUserDetails(Long id,String email, String password, GrantedAuthority authorities) {
         this.id=id;
-        this.email = email;
+        this.emil = email;
         this.password = password;
         this.authorities = authorities;
 
@@ -25,42 +28,41 @@ public class CustomUserDetails implements UserDetails {
         ArrayList<GrantedAuthority> auth = new ArrayList<>();
         auth.add(authorities);
         return auth;
-    }
 
-    public Long getId(){
-        return this.id;
-    }
-    public String getEmail(){
-        return this.email;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
+    }
+
+
+    public Long getId() {
+        return id;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return emil;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

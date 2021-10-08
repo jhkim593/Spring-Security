@@ -21,6 +21,15 @@ public class TestController {
     public String test() {
         return "test";
     }
+    @GetMapping("/user/test")
+    public String userTest() {
+        return "userTest";
+    }
+    @GetMapping("/admin/test")
+    public String adminTest() {
+        return "adminTest";
+    }
+
 
 //    @GetMapping("/test")
 //    public ResponseEntity apiTest(@RequestBody TestDto testDto){
