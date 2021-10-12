@@ -1,10 +1,10 @@
 package com.sparrow.test.config;
 
+import com.sparrow.test.UserRepository;
 import com.sparrow.test.config.auth.CustomUserDetailsService;
-import com.sparrow.test.config.auth.SecurityAuthenticationFilter;
-import com.sparrow.test.config.filter.CustomFilter;
-import com.sparrow.test.config.filter.CustomFilter2;
-import com.sparrow.test.config.filter.JwtAuthenticationFilter;
+import com.sparrow.test.config.filter.CustomAuthenticationFilter;
+import com.sparrow.test.config.filter.CustomAuthorizationFilter;
+import com.sparrow.test.config.handler.CustomAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
 
 //    @Bean
@@ -65,10 +66,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/test").hasRole("ADMIN")
                 .anyRequest().authenticated()// 그외 나머지 요청은 모두 인증된 회원만 접근 가능
                 .and()
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()).and()
 //                .addFilterBefore(new  SecurityAuthenticationFilter(customUserDetailsService,passwordEncoder), UsernamePasswordAuthenticationFilter.class);
 //                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-                .addFilterBefore(new CustomFilter2(jwtTokenProvider),UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new CustomFilter(authenticationManager(),jwtTokenProvider));
+                .addFilterBefore(new CustomAuthorizationFilter(jwtTokenProvider,userRepository),UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new CustomAuthenticationFilter(authenticationManager(),jwtTokenProvider));
 
 
 

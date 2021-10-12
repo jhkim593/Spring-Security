@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class CustomFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private ObjectMapper mapper=new ObjectMapper();
     private AuthenticationManager authenticationManager;
     private JwtTokenProvider jwtTokenProvider;
-    public CustomFilter(AuthenticationManager authenticationManager,JwtTokenProvider jwtTokenProvider){
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider){
         this.authenticationManager=authenticationManager;
         this.jwtTokenProvider=jwtTokenProvider;
     }
@@ -47,14 +47,9 @@ public class CustomFilter extends UsernamePasswordAuthenticationFilter {
             UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(userLoginDto.getEmail(),userLoginDto.getPassword());
             authenticate = authenticationManager.authenticate(token);
 
-
-
-//        }catch (UsernameNotFoundException e){
-//           writer.print(mapper.writeValueAsString("등록된 회원이 없습니다."));
-//           e.printStackTrace();
         }catch (Exception e){
+            response.setStatus(401);
             writer.print(mapper.writeValueAsString("로그인에 실패 했습니다."));
-            e.printStackTrace();
         }
         finally {
             return authenticate;
