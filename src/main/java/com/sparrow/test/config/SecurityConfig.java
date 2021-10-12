@@ -2,6 +2,8 @@ package com.sparrow.test.config;
 
 import com.sparrow.test.config.auth.CustomUserDetailsService;
 import com.sparrow.test.config.auth.SecurityAuthenticationFilter;
+import com.sparrow.test.config.filter.CustomFilter;
+import com.sparrow.test.config.filter.CustomFilter2;
 import com.sparrow.test.config.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -53,17 +55,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //                httpBasic().disable()
                 csrf().disable()
+                .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
-                .antMatchers("/test"
+                .antMatchers("/login1"
                 ).permitAll()
                 .antMatchers("/user/test").hasRole("USER")
                 .antMatchers("/admin/test").hasRole("ADMIN")
                 .anyRequest().authenticated()// 그외 나머지 요청은 모두 인증된 회원만 접근 가능
                 .and()
 //                .addFilterBefore(new  SecurityAuthenticationFilter(customUserDetailsService,passwordEncoder), UsernamePasswordAuthenticationFilter.class);
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomFilter2(jwtTokenProvider),UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new CustomFilter(authenticationManager(),jwtTokenProvider));
+
+
 
     }
 
