@@ -26,18 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-
-//    @Bean
-//    public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
-//        AuthenticFilter filter = new AuthenticFilter(authenticationManager(),userRepository,customUserDetailsService);
-//        filter.setAuthenticationManager(authenticationManager());
-//        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
-//        filter.setUsernameParameter("email");
-//        filter.setPasswordParameter("password");
-//
-//        return filter;
-//    }
-
+    
 
     @Bean
     @Override
