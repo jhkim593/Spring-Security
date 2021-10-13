@@ -47,7 +47,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(userLoginDto.getEmail(),userLoginDto.getPassword());
             authenticate = authenticationManager.authenticate(token);
 
-        }catch (Exception e){
+        }
+        catch (Exception e){
             response.setStatus(401);
             writer.print(mapper.writeValueAsString("로그인에 실패 했습니다."));
         }

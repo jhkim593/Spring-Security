@@ -37,9 +37,8 @@ public class SecurityTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-
     }
 
 //    @Test
@@ -56,8 +55,18 @@ public class SecurityTest {
     public void authorizationTest()throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/test")
                         .contentType(MediaType.APPLICATION_JSON).
-                        header(HttpHeaders.AUTHORIZATION,"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjM0MDI2NTE3LCJleHAiOjE2MzQwMzAxMTd9.J7IPodrbxX2J8FTtKXINFgePZI_0IoiLCG2ZISUlYJg"))
+                        header(HttpHeaders.AUTHORIZATION,"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjM0MDg3NDE4LCJleHAiOjE2MzQwOTEwMTh9.QjeH0TsuHbjqfoA1JcMgiBzJX02v1NCt6G9GxGJ-3XU"))
                 .andExpect(status().isForbidden())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    public void exceptionHandlingTest()throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/100")
+                        .contentType(MediaType.APPLICATION_JSON).
+                        header(HttpHeaders.AUTHORIZATION,"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjM0MTAzMDQ2LCJleHAiOjE2MzQxMDY2NDZ9.zng21RDo_8zygaLL_BWkCRygT03RF3uZJySPZEnnqmM"))
+                .andExpect(status().is5xxServerError())
                 .andDo(MockMvcResultHandlers.print());
     }
 

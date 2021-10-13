@@ -5,10 +5,7 @@ package com.sparrow.test.config;
 // import 생략
 
 import com.sparrow.test.config.auth.CustomUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,11 +56,17 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     }
 
     //토큰 유효성 검증
-    public boolean validateToken(String jwtToken) throws Exception {
+    public boolean validateToken(String jwtToken) {
 
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-        return !claims.getBody().getExpiration().before(new Date());
-
-
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
+
+
 }

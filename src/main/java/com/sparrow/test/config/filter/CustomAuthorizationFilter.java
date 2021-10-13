@@ -37,11 +37,13 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         PrintWriter writer=null;
 
         if(token == null || !token.startsWith("Bearer")) {
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
             filterChain.doFilter(request, response);
             return;
         }
         token=token.replace("Bearer ","");
-        try{
+
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/json");
 
@@ -56,23 +58,23 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-      }
-        catch (UserNotFoundException e){
-            writer= response.getWriter();
-            response.setStatus(401);
-            writer.print(objectMapper.writeValueAsString("등록된 회원이 아닙니다."));
-        }
-        catch(ExpiredJwtException e) {
-            writer= response.getWriter();
-            response.setStatus(401);
-            writer.print(objectMapper.writeValueAsString("토큰 유효기간이 만료되었습니다."));
-        }
-        catch (Exception e) {
-            writer= response.getWriter();
-            response.setStatus(401);
-            writer.print(objectMapper.writeValueAsString("토큰 인증에 실패했습니다."));
 
-        }
+//        catch (UserNotFoundException e){
+//            writer= response.getWriter();
+//            response.setStatus(401);
+//            writer.print(objectMapper.writeValueAsString("등록된 회원이 아닙니다."));
+//        }
+//        catch(ExpiredJwtException e) {
+//            writer= response.getWriter();
+//            response.setStatus(401);
+//            writer.print(objectMapper.writeValueAsString("토큰 유효기간이 만료되었습니다."));
+//        }
+//        catch (Exception e) {
+//            writer= response.getWriter();
+//            response.setStatus(401);
+//            writer.print(objectMapper.writeValueAsString("토큰 인증에 실패했습니다."));
+//
+//        }
     }
 
 }
